@@ -1,9 +1,15 @@
 package pl.javaskills.creditapp.core;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import pl.javaskills.creditapp.core.model.Loan;
 import pl.javaskills.creditapp.core.model.LoanApplication;
 import pl.javaskills.creditapp.core.model.Person;
+import pl.javaskills.creditapp.core.scoring.EducationCalculator;
+
+import java.util.UUID;
 
 public class CreditApplicationService {
     private final PersonScoringCalculator calculator;
@@ -11,9 +17,15 @@ public class CreditApplicationService {
         this.calculator = calculator;
     }
 
+    private static final Logger log = LoggerFactory.getLogger(CreditApplicationService.class);
+
     public CreditApplicationDecision getDecision(LoanApplication loanApplication){
 
+        String id = UUID.randomUUID().toString();
+        MDC.put("id", id);
+        log.info("Application ID is {}", id);
         Person p = loanApplication.getPerson();
+        CreditApplicationDecision decision;
         int points = calculator.calculate(loanApplication.getPerson());
 
         double LOAN_RATE;
@@ -32,19 +44,20 @@ public class CreditApplicationService {
         double creditRating = LOAN_RATE*p.getPersonalData().incomePerFamilyMember()*12*loanApplication.getLoan().getPeriod();
 
         if(points < 300){
-            return new CreditApplicationDecision(DecisionType.NEGATIVE_SCORING, p.getPersonalData(), creditRating);
+            decision = new CreditApplicationDecision(DecisionType.NEGATIVE_SCORING, p.getPersonalData(), creditRating);
         }
         else if (points <= 400)
         {
-            return new CreditApplicationDecision(DecisionType.CONTACT_REQUIRED, p.getPersonalData(), creditRating);
+            decision = new CreditApplicationDecision(DecisionType.CONTACT_REQUIRED, p.getPersonalData(), creditRating);
         }
         else if(creditRating >= loanApplication.getLoan().getAmount())
         {
-            return new CreditApplicationDecision(DecisionType.POSITIVE, p.getPersonalData(), creditRating);
+            decision = new CreditApplicationDecision(DecisionType.POSITIVE, p.getPersonalData(), creditRating);
         }
         else{
-            return new CreditApplicationDecision(DecisionType.NEGATIVE_CREDIT_RATING, p.getPersonalData(), creditRating);
+            decision = new CreditApplicationDecision(DecisionType.NEGATIVE_CREDIT_RATING, p.getPersonalData(), creditRating);
         }
-
+        log.info("DECISION = " + decision.getDecisionType());
+    return decision;
     }
 }
