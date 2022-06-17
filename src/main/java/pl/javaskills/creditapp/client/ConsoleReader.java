@@ -32,8 +32,18 @@ public class ConsoleReader {
         System.out.println("Enter your phone number:");
         String phoneNumber = in.next();
 
-        System.out.println("Enter total monthly income in PLN:");
-        double monthlyIncome = in.nextDouble();
+        System.out.println("How many sources of income do you have?");
+        int numOfSources = in.nextInt();
+
+        SourcesOfIncome[] sourcesOfIncomes = new SourcesOfIncome[numOfSources];
+        for (int i=1; i<numOfSources+1; i++)
+        {
+            System.out.println("Enter type of source of income " + i + " (EMPLOYMENT_CONTRACT | SELF_EMPLOYMENT | RETIREMENT):");
+            IncomeType incomeType = IncomeType.valueOf(in.next());
+            System.out.println("Enter net monthly income of source of income "+ i +": ");
+            double monthlyIncome = in.nextDouble();
+            sourcesOfIncomes[i-1] = new SourcesOfIncome(incomeType, monthlyIncome);
+        }
 
         System.out.println("Enter number of family dependants(including applicant):");
         int familyDependants = in.nextInt();
@@ -48,13 +58,15 @@ public class ConsoleReader {
         byte loanPeriod = in.nextByte();
 
         PersonalData pd = new PersonalData(name, lastName, motherMaidenName, maritalStatus,
-                education, monthlyIncome, familyDependants);
+                education, familyDependants);
+
+        FinanceData fd = new FinanceData(sourcesOfIncomes);
 
         ContactData cd = new ContactData(email, phoneNumber);
 
         PurposeOfLoan pof = new PurposeOfLoan(loan, loanAmount, loanPeriod);
 
-        return new LoanApplication(new Person(pd, cd), pof);
+        return new LoanApplication(new Person(pd, cd, fd), pof);
     }
 
 }

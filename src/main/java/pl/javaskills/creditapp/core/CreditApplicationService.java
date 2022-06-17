@@ -41,7 +41,7 @@ public class CreditApplicationService {
                 throw new IllegalStateException("Unexpected value: " + loan);
         }
 
-        double creditRating = LOAN_RATE*p.getPersonalData().incomePerFamilyMember()*12*loanApplication.getLoan().getPeriod();
+        double creditRating = LOAN_RATE*p.getIncomePerFamilyMember()*12*loanApplication.getLoan().getPeriod();
 
         if(points < 300){
             decision = new CreditApplicationDecision(DecisionType.NEGATIVE_SCORING, p.getPersonalData(), creditRating);

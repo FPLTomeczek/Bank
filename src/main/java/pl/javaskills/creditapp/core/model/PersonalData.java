@@ -6,21 +6,15 @@ public class PersonalData {
     private String mothersMaidenName;
     private MaritalStatus maritalStatus;
     private Education education;
-    private double totalMonthlyIncomeInPln;
     private int numOfFamilyDependants;
 
-    public PersonalData(String name, String lastName, String mothersMaidenName, MaritalStatus maritalStatus, Education education, double totalMonthlyIncomeInPln, int numOfFamilyDependants) {
+    public PersonalData(String name, String lastName, String mothersMaidenName, MaritalStatus maritalStatus, Education education, int numOfFamilyDependants) {
         this.name = name;
         this.lastName = lastName;
         this.mothersMaidenName = mothersMaidenName;
         this.maritalStatus = maritalStatus;
         this.education = education;
-        this.totalMonthlyIncomeInPln = totalMonthlyIncomeInPln;
         this.numOfFamilyDependants = numOfFamilyDependants;
-    }
-    public double incomePerFamilyMember()
-    {
-        return this.totalMonthlyIncomeInPln/this.numOfFamilyDependants;
     }
     public String getName() {
         return name;
@@ -62,13 +56,6 @@ public class PersonalData {
         this.education = education;
     }
 
-    public double getTotalMonthlyIncomeInPln() {
-        return totalMonthlyIncomeInPln;
-    }
-
-    public void setTotalMonthlyIncomeInPln(double totalMonthlyIncomeInPln) {
-        this.totalMonthlyIncomeInPln = totalMonthlyIncomeInPln;
-    }
 
     public int getNumOfFamilyDependants() {
         return numOfFamilyDependants;
@@ -77,4 +64,6 @@ public class PersonalData {
     public void setNumOfFamilyDependants(int numOfFamilyDependants) {
         this.numOfFamilyDependants = numOfFamilyDependants;
     }
+
+
 }
