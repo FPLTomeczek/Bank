@@ -25,7 +25,7 @@ public class PersonScoringCalculator {
 
         int scoring = educationCalculator.calculate(person.getPersonalData()) +
                 maritalStatusCalculator.calculate(person.getPersonalData()) +
-                incomeCalculator.calculate(person.getPersonalData());
+                incomeCalculator.calculate(person);
         log.info("Calculated scoring = " + scoring + " points");
         return scoring;
     }

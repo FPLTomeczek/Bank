@@ -34,7 +34,7 @@ class PersonScoringCalculatorTest {
         Person person = PersonTestFactory.create();
         BDDMockito.given(educationCalculatorMock.calculate(eq(person.getPersonalData()))).willReturn(120);
         BDDMockito.given(maritalStatusCalculatorMock.calculate(eq(person.getPersonalData()))).willReturn(210);
-        BDDMockito.given(incomeCalculatorMock.calculate(eq(person.getPersonalData()))).willReturn(230);
+        BDDMockito.given(incomeCalculatorMock.calculate(eq(person))).willReturn(230);
 
         int scoring = cut.calculate(person);
 

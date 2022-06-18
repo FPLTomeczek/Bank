@@ -7,11 +7,16 @@ import pl.javaskills.creditapp.core.model.PersonalData;
 
 public class IncomeCalculator {
     private static final Logger log = LoggerFactory.getLogger(IncomeCalculator.class);
-    public int calculate (PersonalData personalData)
+    public int calculate (Person person)
     {
-        double incomePerFamilyMember = (personalData.incomePerFamilyMember());
+        double incomePerFamilyMember = (person.getIncomePerFamilyMember());
         int pointsForIncome = (int) (incomePerFamilyMember/1000) * 100;
-        log.info("Income per family member = {} ({} points)",incomePerFamilyMember,pointsForIncome);
+        if(person.getFinanceData().getSourcesOfIncomes().length > 1)
+        {
+            pointsForIncome+=100;
+            log.info("Extra 100 points for " + person.getFinanceData().getSourcesOfIncomes().length + " sources of income");
+        }
+        log.info("Income per family member = {} ({} points)",incomePerFamilyMember,(int) (incomePerFamilyMember)/1000*100);
         return pointsForIncome;
     }
 }

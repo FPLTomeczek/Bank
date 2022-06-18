@@ -20,11 +20,21 @@ public class ConsoleReader {
         System.out.println("Enter your mothers maiden name");
         String motherMaidenName = in.next();
 
-        System.out.println("What is your marital status? (SINGLE, MARRIED, DIVORCED, WIDOWED, SEPARATED)");
-        MaritalStatus maritalStatus = MaritalStatus.valueOf(in.next());
+        String validateString = "";
+        do {
+            System.out.println("What is your marital status? " + GenerateStringForEnums.generateMaritalStatus());
+            validateString = in.next();
+        }while (!EnumValidator.validateMaritalStatus(validateString));
+        MaritalStatus maritalStatus = MaritalStatus.valueOf(validateString);
 
-        System.out.println("What's your education level? (NONE, PRIMARY, MIDDLE, SECONDARY, POST_SECONDARY, TERTIARY)");
-        Education education = Education.valueOf(in.next());
+
+        do {
+            System.out.println("What's your education level? " + GenerateStringForEnums.generateEducation());
+            validateString = in.next();
+
+        }while (!EnumValidator.validateEducation(validateString));
+        Education education = Education.valueOf(validateString);
+
 
         System.out.println("Enter your email address:");
         String email = in.next();
@@ -32,14 +42,32 @@ public class ConsoleReader {
         System.out.println("Enter your phone number:");
         String phoneNumber = in.next();
 
-        System.out.println("Enter total monthly income in PLN:");
-        double monthlyIncome = in.nextDouble();
+        System.out.println("How many sources of income do you have?");
+        int numOfSources = in.nextInt();
+
+        SourcesOfIncome[] sourcesOfIncomes = new SourcesOfIncome[numOfSources];
+        for (int i=1; i<numOfSources+1; i++)
+        {
+            do {
+                System.out.println("Enter type of source of income " + i + " " + GenerateStringForEnums.generateIncomeType());
+                validateString = in.next();
+            }
+            while (!EnumValidator.validateIncomeType(validateString));
+            IncomeType incomeType = IncomeType.valueOf(validateString);
+            System.out.println("Enter net monthly income of source of income "+ i +": ");
+            double monthlyIncome = in.nextDouble();
+            sourcesOfIncomes[i-1] = new SourcesOfIncome(incomeType, monthlyIncome);
+        }
 
         System.out.println("Enter number of family dependants(including applicant):");
         int familyDependants = in.nextInt();
 
-        System.out.println("What is purpose of loan? (MORTGAGE | PERSONAL_LOAN):");
-        Loan loan = Loan.valueOf(in.next());
+
+        do {
+            System.out.println("What is purpose of loan? " + GenerateStringForEnums.generateLoan());
+            validateString = in.next();
+        }while (!EnumValidator.validateLoan(validateString));
+        Loan loan = Loan.valueOf(validateString);
 
         System.out.println("Enter loan amount:");
         double loanAmount = in.nextDouble();
@@ -48,13 +76,15 @@ public class ConsoleReader {
         byte loanPeriod = in.nextByte();
 
         PersonalData pd = new PersonalData(name, lastName, motherMaidenName, maritalStatus,
-                education, monthlyIncome, familyDependants);
+                education, familyDependants);
+
+        FinanceData fd = new FinanceData(sourcesOfIncomes);
 
         ContactData cd = new ContactData(email, phoneNumber);
 
         PurposeOfLoan pof = new PurposeOfLoan(loan, loanAmount, loanPeriod);
 
-        return new LoanApplication(new Person(pd, cd), pof);
+        return new LoanApplication(new Person(pd, cd, fd), pof);
     }
 
 }
