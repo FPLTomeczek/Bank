@@ -1,12 +1,13 @@
 package pl.javaskills.creditapp.core.model;
 
 public class LoanApplication {
-    Person person;
-    PurposeOfLoan loan;
+    private final Person person;
+    private final PurposeOfLoan loan;
 
-    public LoanApplication(Person person, PurposeOfLoan loan) {
+    public LoanApplication(Person person, PurposeOfLoan purposeOfLoan)
+    {
         this.person = person;
-        this.loan = loan;
+        this.loan = purposeOfLoan;
     }
 
     public Person getPerson() {

@@ -44,20 +44,26 @@ public class CreditApplicationService {
         double creditRating = LOAN_RATE*p.getIncomePerFamilyMember()*12*loanApplication.getLoan().getPeriod();
 
         if(points < 300){
-            decision = new CreditApplicationDecision(DecisionType.NEGATIVE_SCORING, p.getPersonalData(), creditRating);
+            decision = new CreditApplicationDecision(DecisionType.NEGATIVE_SCORING, p.getPersonalData(), creditRating, points);
         }
         else if (points <= 400)
         {
-            decision = new CreditApplicationDecision(DecisionType.CONTACT_REQUIRED, p.getPersonalData(), creditRating);
+            decision = new CreditApplicationDecision(DecisionType.CONTACT_REQUIRED, p.getPersonalData(), creditRating, points);
+        }
+        else if(creditRating >= loanApplication.getLoan().getAmount() && loanApplication.getLoan().getAmount()<Constants.MIN_LOAN_AMOUNT_MORTGAGE)
+        {
+            decision = new CreditApplicationDecision(DecisionType.NEGATIVE_REQUIREMENTS_NOT_MET, p.getPersonalData(), creditRating, points);
         }
         else if(creditRating >= loanApplication.getLoan().getAmount())
         {
-            decision = new CreditApplicationDecision(DecisionType.POSITIVE, p.getPersonalData(), creditRating);
+            decision = new CreditApplicationDecision(DecisionType.POSITIVE, p.getPersonalData(), creditRating, points);
         }
         else{
-            decision = new CreditApplicationDecision(DecisionType.NEGATIVE_CREDIT_RATING, p.getPersonalData(), creditRating);
+            decision = new CreditApplicationDecision(DecisionType.NEGATIVE_CREDIT_RATING, p.getPersonalData(), creditRating, points);
         }
         log.info("DECISION = " + decision.getDecisionType());
     return decision;
+
+
     }
 }
