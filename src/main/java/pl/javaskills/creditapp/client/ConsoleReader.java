@@ -65,11 +65,15 @@ public class ConsoleReader {
 
         FinanceData fd = new FinanceData(sourcesOfIncomes);
 
-        ContactData cd = new ContactData(email, phoneNumber);
+        ContactData cd = ContactData.Builder
+                .create()
+                .withEmail(email)
+                .withPhoneNumber(phoneNumber)
+                .build();
 
         PurposeOfLoan pof = new PurposeOfLoan(loan, loanAmount, loanPeriod);
 
-        return new LoanApplication(Person.Builder.create()
+        return new LoanApplication(NaturalPerson.Builder.create()
         .withPersonalData(pd)
         .withFinanceData(fd)
         .withContactData(cd)
