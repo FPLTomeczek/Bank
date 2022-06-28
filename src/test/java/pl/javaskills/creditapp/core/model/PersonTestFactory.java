@@ -1,37 +1,135 @@
 package pl.javaskills.creditapp.core.model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class PersonTestFactory {
+    private static List<FamilyMember> getFamilyMemberList(int dependants) {
+        List<FamilyMember> familyMemberList = new ArrayList<>();
 
-    public static Person create(int dependants, SourcesOfIncome... sourcesOfIncomes) {
-        PersonalData personalData = new PersonalData("test", "test", "test",
-                MaritalStatus.MARRIED, Education.MIDDLE, dependants);
-        return new Person(personalData, null, new FinanceData(sourcesOfIncomes));
+        for (int i = 0; i< dependants-1; i++)
+        {
+            familyMemberList.add(new FamilyMember("John",18));
+        }
+        return familyMemberList;
     }
 
-    public static Person create(MaritalStatus maritalStatus) {
-        PersonalData personalData = new PersonalData("test", "test", "test",
-                maritalStatus, Education.NONE, 2);
-        return new Person(personalData, null, null);
+
+    public static NaturalPerson create(int dependants, SourcesOfIncome... sourcesOfIncomes) {
+
+        List<FamilyMember> familyMemberList = getFamilyMemberList(dependants);
+        PersonalData personalData = PersonalData.Builder.create()
+                .withName("test")
+                .withLastName("test")
+                .withMothersMaidenName("test")
+                .withMaritalStatus(MaritalStatus.MARRIED)
+                .withEducation(Education.MIDDLE)
+                .build();
+
+        return NaturalPerson.Builder.create()
+                .withFamilyMembers(familyMemberList)
+                .withPersonalData(personalData)
+                .withContactData(null)
+                .withFinanceData( new FinanceData(sourcesOfIncomes))
+                .build();
     }
 
-    public static Person create(Education education) {
-        PersonalData personalData = new PersonalData("test", "test", "test",
-                MaritalStatus.MARRIED, education, 2);
-        return new Person(personalData, null, null);
+
+    public static NaturalPerson create(MaritalStatus maritalStatus, Education education, int dependants, SourcesOfIncome... sourcesOfIncomes) {
+        List<FamilyMember> familyMemberList = getFamilyMemberList(dependants);
+        PersonalData personalData = PersonalData.Builder.create()
+                .withName("test")
+                .withLastName("test")
+                .withMothersMaidenName("test")
+                .withMaritalStatus(maritalStatus)
+                .withEducation(education)
+                .build();
+
+        return NaturalPerson.Builder.create()
+                .withFamilyMembers(familyMemberList)
+                .withPersonalData(personalData)
+                .withContactData(null)
+                .withFinanceData(new FinanceData(sourcesOfIncomes))
+                .build();
     }
 
-    public static Person create() {
-        PersonalData personalData = new PersonalData("test", "test", "test",
-                MaritalStatus.MARRIED, Education.MIDDLE, 2);
-        return new Person(personalData, null, null);
+    public static NaturalPerson create(MaritalStatus maritalStatus) {
+        List<FamilyMember> familyMemberList = Arrays.asList(new FamilyMember("John",18),
+                new FamilyMember("Jane",20));
+        PersonalData personalData = PersonalData.Builder.create()
+                .withName("test")
+                .withLastName("test")
+                .withMothersMaidenName("test")
+                .withMaritalStatus(maritalStatus)
+                .withEducation(Education.MIDDLE)
+                .build();
+
+        return NaturalPerson.Builder.create()
+                .withFamilyMembers(familyMemberList)
+                .withPersonalData(personalData)
+                .withContactData(null)
+                .withFinanceData(null)
+                .build();
     }
 
-        public static Person create ( double totalMonthlyIncomeInPln, int numOfDependants,
+    public static NaturalPerson create(Education education) {
+        List<FamilyMember> familyMemberList = Arrays.asList(new FamilyMember("John",18),
+                new FamilyMember("Jane",20));
+        PersonalData personalData = PersonalData.Builder.create()
+                .withName("test")
+                .withLastName("test")
+                .withMothersMaidenName("test")
+                .withMaritalStatus(MaritalStatus.MARRIED)
+                .withEducation(education)
+                .build();
+
+        return NaturalPerson.Builder.create()
+                .withFamilyMembers(familyMemberList)
+                .withPersonalData(personalData)
+                .withContactData(null)
+                .withFinanceData(null)
+                .build();
+    }
+
+    public static NaturalPerson create() {
+        List<FamilyMember> familyMemberList = Arrays.asList(new FamilyMember("John",18),
+                new FamilyMember("Jane",20));
+        PersonalData personalData = PersonalData.Builder.create()
+                .withName("test")
+                .withLastName("test")
+                .withMothersMaidenName("test")
+                .withMaritalStatus(MaritalStatus.MARRIED)
+                .withEducation(Education.MIDDLE)
+                .build();
+
+
+        return NaturalPerson.Builder.create()
+                .withFamilyMembers(familyMemberList)
+                .withPersonalData(personalData)
+                .withContactData(null)
+                .withFinanceData(null)
+                .build();
+    }
+
+        public static NaturalPerson create (double totalMonthlyIncomeInPln, int numOfDependants,
         Education education, MaritalStatus maritalStatus){
-            PersonalData personalData = new PersonalData("test", "test", "test",
-                    maritalStatus, education, numOfDependants);
-            return new Person(personalData, null, new FinanceData(
-                    new SourcesOfIncome(IncomeType.SELF_EMPLOYMENT, totalMonthlyIncomeInPln)));
+            List<FamilyMember> familyMemberList = getFamilyMemberList(numOfDependants);
+            PersonalData personalData = PersonalData.Builder.create()
+                    .withName("test")
+                    .withLastName("test")
+                    .withMothersMaidenName("test")
+                    .withMaritalStatus(maritalStatus)
+                    .withEducation(education)
+                    .build();
+
+            return NaturalPerson.Builder.create()
+                    .withFamilyMembers(familyMemberList)
+                    .withPersonalData(personalData)
+                    .withContactData(null)
+                    .withFinanceData(new FinanceData(
+                            new SourcesOfIncome(IncomeType.SELF_EMPLOYMENT, totalMonthlyIncomeInPln)))
+                    .build();
         }
     }
 

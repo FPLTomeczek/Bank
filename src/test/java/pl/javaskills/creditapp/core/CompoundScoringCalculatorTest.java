@@ -6,39 +6,34 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.javaskills.creditapp.core.model.*;
-import pl.javaskills.creditapp.core.scoring.EducationCalculator;
-import pl.javaskills.creditapp.core.scoring.IncomeCalculator;
-import pl.javaskills.creditapp.core.scoring.MaritalStatusCalculator;
+import pl.javaskills.creditapp.core.scoring.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 
-@ExtendWith(MockitoExtension.class)
-class PersonScoringCalculatorTest {
+class CompoundScoringCalculatorTest {
 
-    @InjectMocks
-    PersonScoringCalculator cut;
+    private PersonCalculator calculator1Mock = Mockito.mock(PersonCalculator.class);
+    private PersonCalculator calculator2Mock = Mockito.mock(PersonCalculator.class);
+    private PersonCalculator calculator3Mock = Mockito.mock(PersonCalculator.class);
 
-    @Mock
-    private EducationCalculator educationCalculatorMock;
-    @Mock
-    private MaritalStatusCalculator maritalStatusCalculatorMock;
-    @Mock
-    private IncomeCalculator incomeCalculatorMock;
-
+    private CompoundScoringCalculator cut = new CompoundScoringCalculator(calculator1Mock, calculator2Mock, calculator3Mock);
     @Test
     @DisplayName("should return sum of calculations")
     public void test1(){
         Person person = PersonTestFactory.create();
-        BDDMockito.given(educationCalculatorMock.calculate(eq(person.getPersonalData()))).willReturn(120);
-        BDDMockito.given(maritalStatusCalculatorMock.calculate(eq(person.getPersonalData()))).willReturn(210);
-        BDDMockito.given(incomeCalculatorMock.calculate(eq(person))).willReturn(230);
+        BDDMockito.given(calculator1Mock.calculate(eq(person))).willReturn(120);
+        BDDMockito.given(calculator2Mock.calculate(eq(person))).willReturn(210);
+        BDDMockito.given(calculator3Mock.calculate(eq(person))).willReturn(230);
 
         int scoring = cut.calculate(person);
 
         assertEquals(560, scoring);
+
+
     }
 
 //    @Test

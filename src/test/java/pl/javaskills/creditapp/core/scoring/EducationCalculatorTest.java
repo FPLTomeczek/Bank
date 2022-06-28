@@ -23,7 +23,7 @@ class EducationCalculatorTest {
     public void test1(Education education)
     {
         Person person = PersonTestFactory.create(education);
-        int scoring = cut.calculate(person.getPersonalData());
+        int scoring = cut.calculate(person);
         assertEquals(education.getValue(), scoring);
     }
 }

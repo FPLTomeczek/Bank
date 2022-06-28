@@ -8,11 +8,13 @@ public class CreditApplicationDecision {
     private final DecisionType decisionType;
     private final PersonalData personalData;
     private final Double creditRate;
+    private final int scoring;
 
-    public CreditApplicationDecision(DecisionType decisionType, PersonalData personalData, Double creditRate) {
+    public CreditApplicationDecision(DecisionType decisionType, PersonalData personalData, Double creditRate, int scoring) {
         this.decisionType = decisionType;
         this.personalData = personalData;
         this.creditRate = creditRate;
+        this.scoring = scoring;
     }
 
     public String getDecisionString()
@@ -25,17 +27,30 @@ public class CreditApplicationDecision {
                 return String.format("Sorry %s %s decision is negative", personalData.getName(),
                         personalData.getLastName());
             case NEGATIVE_CREDIT_RATING:
-                return String.format("Sorry %s %s decision is negative. Bank can borrow only %g", personalData.getName(),
+                return String.format("Sorry %s %s decision is negative. Bank can borrow only %f", personalData.getName(),
                         personalData.getLastName(),
                         creditRate);
             case CONTACT_REQUIRED:
                 return String.format("Sorry, %s %s bank requires additional documents",
                         personalData.getName(), personalData.getLastName());
+            case NEGATIVE_REQUIREMENTS_NOT_MET:
+                return String.format("Sorry, %s %s, decision is negative. Minimum loan amount for mortgage is" +
+                                "%f",
+                        personalData.getName(), personalData.getLastName(),Constants.MIN_LOAN_AMOUNT_MORTGAGE);
+
         }
         return null;
     }
 
     public DecisionType getDecisionType() {
         return decisionType;
+    }
+
+    public int getScoring() {
+        return scoring;
+    }
+
+    public Double getCreditRate() {
+        return creditRate;
     }
 }

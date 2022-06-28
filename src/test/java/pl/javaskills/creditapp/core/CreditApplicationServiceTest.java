@@ -1,5 +1,7 @@
 package pl.javaskills.creditapp.core;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -7,11 +9,16 @@ import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import pl.javaskills.creditapp.core.exception.ValidationException;
 import pl.javaskills.creditapp.core.model.Loan;
 import pl.javaskills.creditapp.core.model.LoanApplication;
 import pl.javaskills.creditapp.core.model.LoanApplicationTestFactory;
+import pl.javaskills.creditapp.core.model.Person;
+import pl.javaskills.creditapp.core.scoring.PersonCalculator;
+import pl.javaskills.creditapp.core.validation.CreditApplicationValidator;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
 @ExtendWith(MockitoExtension.class)
@@ -21,7 +28,22 @@ class CreditApplicationServiceTest {
     private CreditApplicationService cut;
 
     @Mock
-    private PersonScoringCalculator calculatorMock;
+    private PersonCalculator calculatorMock;
+
+    @Mock
+    private PersonScoringCalculatorFactory personScoringCalculatorFactoryMock;
+
+    @Mock
+    private CreditApplicationValidator creditApplicationValidatorMock;
+
+    @BeforeEach
+    public void init() throws ValidationException {
+        BDDMockito.given(personScoringCalculatorFactoryMock.getCalculator(any(Person.class))).willReturn(calculatorMock);
+
+        BDDMockito.doNothing()
+                .when(creditApplicationValidatorMock)
+                .validate(any(LoanApplication.class));
+    }
 
     @Test
     @DisplayName("should return NEGATIVE_SCORING decision, when scoring is < 300")

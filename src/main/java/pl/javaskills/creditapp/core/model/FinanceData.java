@@ -1,13 +1,16 @@
 package pl.javaskills.creditapp.core.model;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class FinanceData {
-    private final SourcesOfIncome[] sourcesOfIncomes;
+    private final List<SourcesOfIncome> sourcesOfIncomes;
 
     public FinanceData(SourcesOfIncome... sourcesOfIncomes) {
-        this.sourcesOfIncomes = sourcesOfIncomes;
+        this.sourcesOfIncomes = Arrays.asList(sourcesOfIncomes);
     }
 
-    public SourcesOfIncome[] getSourcesOfIncomes() {
+    public List<SourcesOfIncome> getSourcesOfIncomes() {
         return sourcesOfIncomes;
     }
 }
