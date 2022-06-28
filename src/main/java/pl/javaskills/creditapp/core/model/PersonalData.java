@@ -6,15 +6,13 @@ public class PersonalData {
     private final String mothersMaidenName;
     private final MaritalStatus maritalStatus;
     private final Education education;
-    private final int numOfFamilyDependants;
 
-    private PersonalData(String name, String lastName, String mothersMaidenName, MaritalStatus maritalStatus, Education education, int numOfFamilyDependants) {
+    private PersonalData(String name, String lastName, String mothersMaidenName, MaritalStatus maritalStatus, Education education) {
         this.name = name;
         this.lastName = lastName;
         this.mothersMaidenName = mothersMaidenName;
         this.maritalStatus = maritalStatus;
         this.education = education;
-        this.numOfFamilyDependants = numOfFamilyDependants;
     }
 
     public String getName() {
@@ -42,18 +40,12 @@ public class PersonalData {
     }
 
 
-
-    public int getNumOfFamilyDependants() {
-        return numOfFamilyDependants;
-    }
-
     public static class Builder{
         private String name;
         private String lastName;
         private String mothersMaidenName;
         private MaritalStatus maritalStatus;
         private Education education;
-        private int numOfFamilyDependants;
 
         private Builder(){}
 
@@ -92,14 +84,9 @@ public class PersonalData {
             return this;
         }
 
-        public Builder withNumOfFamilyDependants(int numOfFamilyDependants)
-        {
-            this.numOfFamilyDependants = numOfFamilyDependants;
-            return this;
-        }
 
         public PersonalData build(){
-            return new PersonalData(name, lastName, mothersMaidenName, maritalStatus, education, numOfFamilyDependants);
+            return new PersonalData(name, lastName, mothersMaidenName, maritalStatus, education);
         }
 
     }

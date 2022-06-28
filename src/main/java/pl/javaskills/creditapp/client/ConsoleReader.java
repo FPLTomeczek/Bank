@@ -2,13 +2,13 @@ package pl.javaskills.creditapp.client;
 
 import pl.javaskills.creditapp.core.Constants;
 import pl.javaskills.creditapp.core.model.*;
-import pl.javaskills.creditapp.core.model.Person;
 
 import java.util.Scanner;
 
-public class ConsoleReader {
+public class ConsoleReader implements CreditApplicationReader{
 
-    public LoanApplication readInputParameters() {
+    @Override
+    public LoanApplication read() {
 
         Scanner in = new Scanner(System.in);
 
@@ -60,7 +60,6 @@ public class ConsoleReader {
                 .withMothersMaidenName(motherMaidenName)
                 .withMaritalStatus(maritalStatus)
                 .withEducation(education)
-                .withNumOfFamilyDependants(familyDependants)
                 .build();
 
         FinanceData fd = new FinanceData(sourcesOfIncomes);

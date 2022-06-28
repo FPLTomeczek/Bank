@@ -25,4 +25,11 @@ public class LoanApplicationTestFactory {
         return loanApplication;
     }
 
+    public static LoanApplication create(NaturalPerson person , PurposeOfLoan purposeOfLoan){
+        return new LoanApplication(person, purposeOfLoan);
+    }
+
+    public static LoanApplication create(SelfEmployed person , PurposeOfLoan purposeOfLoan){
+        return new LoanApplication(person, purposeOfLoan);
+    }
 }
