@@ -2,12 +2,8 @@ package pl.javaskills.creditapp.core;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import pl.javaskills.creditapp.core.model.*;
 import pl.javaskills.creditapp.core.scoring.*;
 
@@ -16,20 +12,20 @@ import static org.mockito.ArgumentMatchers.eq;
 
 class CompoundScoringCalculatorTest {
 
-    private PersonCalculator calculator1Mock = Mockito.mock(PersonCalculator.class);
-    private PersonCalculator calculator2Mock = Mockito.mock(PersonCalculator.class);
-    private PersonCalculator calculator3Mock = Mockito.mock(PersonCalculator.class);
+    private ScoringCalculator calculator1Mock = Mockito.mock(ScoringCalculator.class);
+    private ScoringCalculator calculator2Mock = Mockito.mock(ScoringCalculator.class);
+    private ScoringCalculator calculator3Mock = Mockito.mock(ScoringCalculator.class);
 
     private CompoundScoringCalculator cut = new CompoundScoringCalculator(calculator1Mock, calculator2Mock, calculator3Mock);
     @Test
     @DisplayName("should return sum of calculations")
     public void test1(){
-        Person person = PersonTestFactory.create();
-        BDDMockito.given(calculator1Mock.calculate(eq(person))).willReturn(120);
-        BDDMockito.given(calculator2Mock.calculate(eq(person))).willReturn(210);
-        BDDMockito.given(calculator3Mock.calculate(eq(person))).willReturn(230);
+        LoanApplication loanApplication = LoanApplicationTestFactory.create();
+        BDDMockito.given(calculator1Mock.calculate(eq(loanApplication))).willReturn(120);
+        BDDMockito.given(calculator2Mock.calculate(eq(loanApplication))).willReturn(210);
+        BDDMockito.given(calculator3Mock.calculate(eq(loanApplication))).willReturn(230);
 
-        int scoring = cut.calculate(person);
+        int scoring = cut.calculate(loanApplication);
 
         assertEquals(560, scoring);
 

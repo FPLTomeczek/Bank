@@ -3,6 +3,7 @@ package pl.javaskills.creditapp.client;
 import pl.javaskills.creditapp.core.Constants;
 import pl.javaskills.creditapp.core.model.*;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class ConsoleReader implements CreditApplicationReader{
@@ -62,7 +63,7 @@ public class ConsoleReader implements CreditApplicationReader{
                 .withEducation(education)
                 .build();
 
-        FinanceData fd = new FinanceData(sourcesOfIncomes);
+        FinanceData fd = new FinanceData(Arrays.asList(sourcesOfIncomes));
 
         ContactData cd = ContactData.Builder
                 .create()

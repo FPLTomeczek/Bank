@@ -1,5 +1,6 @@
 package pl.javaskills.creditapp.core.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SelfEmployed extends Person {
@@ -31,7 +32,7 @@ public class SelfEmployed extends Person {
         private ContactData contactData;
         private FinanceData financeData;
         private int yearsSinceFounded;
-        private List<FamilyMember> familyMemberList;
+        private List<FamilyMember> familyMemberList = new ArrayList<>();
 
         private Builder() {
         }

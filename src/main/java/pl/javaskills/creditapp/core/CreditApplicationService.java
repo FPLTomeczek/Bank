@@ -3,14 +3,13 @@ package pl.javaskills.creditapp.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
+import pl.javaskills.creditapp.core.exception.RequirementNotMetException;
 import pl.javaskills.creditapp.core.exception.ValidationException;
 import pl.javaskills.creditapp.core.model.Loan;
 import pl.javaskills.creditapp.core.model.LoanApplication;
 import pl.javaskills.creditapp.core.model.Person;
+import pl.javaskills.creditapp.core.validation.CompoundPostValidator;
 import pl.javaskills.creditapp.core.validation.CreditApplicationValidator;
-
-import java.util.UUID;
 
 import static pl.javaskills.creditapp.core.DecisionType.*;
 
@@ -18,26 +17,30 @@ public class CreditApplicationService {
 
     private final PersonScoringCalculatorFactory personScoringCalculatorFactory;
     private final CreditApplicationValidator creditApplicationValidator;
+    private final CompoundPostValidator compoundPostValidator;
 
-    public CreditApplicationService(PersonScoringCalculatorFactory personScoringCalculatorFactory, CreditApplicationValidator creditApplicationValidator) {
+    public CreditApplicationService(PersonScoringCalculatorFactory personScoringCalculatorFactory, CreditApplicationValidator creditApplicationValidator, CompoundPostValidator compoundPostValidator) {
         this.personScoringCalculatorFactory = personScoringCalculatorFactory;
         this.creditApplicationValidator = creditApplicationValidator;
+        this.compoundPostValidator = compoundPostValidator;
     }
 
     private static final Logger log = LoggerFactory.getLogger(CreditApplicationService.class);
 
     public CreditApplicationDecision getDecision(LoanApplication loanApplication) {
 
-        String id = UUID.randomUUID().toString();
-        MDC.put("id", id);
-        log.info("Application ID is {}", id);
+        String id = loanApplication.getId().toString();
+
 
         try {
-            creditApplicationValidator.validate(loanApplication);
             Person p = loanApplication.getPerson();
-            CreditApplicationDecision decision;
-            int points = personScoringCalculatorFactory.getCalculator(p).calculate(p);
+            //step1
+            creditApplicationValidator.validate(loanApplication);
 
+            //step2
+            int points = personScoringCalculatorFactory.getCalculator(p).calculate(loanApplication);
+
+            //step3
             double LOAN_RATE;
             Loan loan = loanApplication.getLoan().getLoan();
             switch (loan) {
@@ -50,20 +53,19 @@ public class CreditApplicationService {
                 default:
                     throw new IllegalStateException("Unexpected value: " + loan);
             }
-
             double creditRating = LOAN_RATE * p.getIncomePerFamilyMember() * 12 * loanApplication.getLoan().getPeriod();
 
-            if (points < 300) {
-                decision = new CreditApplicationDecision(NEGATIVE_SCORING, p.getPersonalData(), creditRating, points);
-            } else if (points <= 400) {
-                decision = new CreditApplicationDecision(CONTACT_REQUIRED, p.getPersonalData(), creditRating, points);
-            } else if (creditRating >= loanApplication.getLoan().getAmount() && loanApplication.getLoan().getAmount() < Constants.MIN_LOAN_AMOUNT_MORTGAGE) {
-                decision = new CreditApplicationDecision(NEGATIVE_REQUIREMENTS_NOT_MET, p.getPersonalData(), creditRating, points);
-            } else if (creditRating >= loanApplication.getLoan().getAmount()) {
-                decision = new CreditApplicationDecision(POSITIVE, p.getPersonalData(), creditRating, points);
-            } else {
-                decision = new CreditApplicationDecision(NEGATIVE_CREDIT_RATING, p.getPersonalData(), creditRating, points);
+            //step4
+            try
+            {
+                compoundPostValidator.validate(loanApplication,points,creditRating);
+            }catch (RequirementNotMetException reqEx)
+            {
+                return new CreditApplicationDecision(NEGATIVE_REQUIREMENTS_NOT_MET, p.getPersonalData(), creditRating, points, reqEx.getRequirementNotMetCause());
             }
+
+
+            CreditApplicationDecision decision = getCreditApplicationDecision(loanApplication, p, points, creditRating);
             log.info("DECISION = " + decision.getDecisionType());
             return decision;
         } catch (ValidationException e) {
@@ -71,6 +73,7 @@ public class CreditApplicationService {
             throw new IllegalStateException();
         }catch(Exception e)
         {
+
             log.error(e.getMessage());
             throw new IllegalStateException();
         }
@@ -79,5 +82,20 @@ public class CreditApplicationService {
         }
 
 
+    }
+
+    private CreditApplicationDecision getCreditApplicationDecision(LoanApplication loanApplication, Person p, int points, double creditRating) {
+        CreditApplicationDecision decision;
+
+        if (points < 300) {
+            decision = new CreditApplicationDecision(NEGATIVE_SCORING, p.getPersonalData(), creditRating, points);
+        } else if (points <= 400) {
+            decision = new CreditApplicationDecision(CONTACT_REQUIRED, p.getPersonalData(), creditRating, points);
+        } else if (creditRating >= loanApplication.getLoan().getAmount()) {
+            decision = new CreditApplicationDecision(POSITIVE, p.getPersonalData(), creditRating, points);
+        } else {
+            decision = new CreditApplicationDecision(NEGATIVE_CREDIT_RATING, p.getPersonalData(), creditRating, points);
+        }
+        return decision;
     }
 }

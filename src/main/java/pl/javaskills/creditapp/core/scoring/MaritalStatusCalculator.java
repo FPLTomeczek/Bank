@@ -4,9 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.javaskills.creditapp.core.model.MaritalStatus;
 import pl.javaskills.creditapp.core.model.Person;
-import pl.javaskills.creditapp.core.model.PersonalData;
 
-public class MaritalStatusCalculator implements PersonCalculator{
+public class MaritalStatusCalculator implements ScoringCalculator {
     private static final Logger log = LoggerFactory.getLogger(MaritalStatusCalculator.class);
 
     @Override

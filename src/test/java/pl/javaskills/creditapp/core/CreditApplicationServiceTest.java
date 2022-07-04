@@ -1,6 +1,5 @@
 package pl.javaskills.creditapp.core;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,17 +8,18 @@ import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import pl.javaskills.creditapp.core.exception.RequirementNotMetException;
 import pl.javaskills.creditapp.core.exception.ValidationException;
 import pl.javaskills.creditapp.core.model.Loan;
 import pl.javaskills.creditapp.core.model.LoanApplication;
 import pl.javaskills.creditapp.core.model.LoanApplicationTestFactory;
 import pl.javaskills.creditapp.core.model.Person;
-import pl.javaskills.creditapp.core.scoring.PersonCalculator;
+import pl.javaskills.creditapp.core.scoring.ScoringCalculator;
+import pl.javaskills.creditapp.core.validation.CompoundPostValidator;
 import pl.javaskills.creditapp.core.validation.CreditApplicationValidator;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 class CreditApplicationServiceTest {
@@ -28,21 +28,28 @@ class CreditApplicationServiceTest {
     private CreditApplicationService cut;
 
     @Mock
-    private PersonCalculator calculatorMock;
+    private ScoringCalculator calculatorMock;
 
     @Mock
     private PersonScoringCalculatorFactory personScoringCalculatorFactoryMock;
 
     @Mock
+    private CompoundPostValidator compoundPostValidatorMock;
+
+    @Mock
     private CreditApplicationValidator creditApplicationValidatorMock;
 
     @BeforeEach
-    public void init() throws ValidationException {
+    public void init() throws ValidationException, RequirementNotMetException {
         BDDMockito.given(personScoringCalculatorFactoryMock.getCalculator(any(Person.class))).willReturn(calculatorMock);
 
         BDDMockito.doNothing()
                 .when(creditApplicationValidatorMock)
                 .validate(any(LoanApplication.class));
+
+        BDDMockito.doNothing()
+                .when(compoundPostValidatorMock)
+                .validate(any(LoanApplication.class), anyInt(), anyDouble());
     }
 
     @Test
@@ -50,7 +57,7 @@ class CreditApplicationServiceTest {
     public void test1(){
         //given
         LoanApplication loanApplication = LoanApplicationTestFactory.create(Loan.MORTGAGE, 100000.0, (byte) 25);
-        BDDMockito.given(calculatorMock.calculate(eq(loanApplication.getPerson()))).willReturn(100);
+        BDDMockito.given(calculatorMock.calculate(eq(loanApplication))).willReturn(100);
 
         //when
         CreditApplicationDecision decision = cut.getDecision(loanApplication);
@@ -63,7 +70,7 @@ class CreditApplicationServiceTest {
     public void test2(){
         //given
         LoanApplication loanApplication = LoanApplicationTestFactory.create(Loan.MORTGAGE, 100000.0, (byte) 25);
-        BDDMockito.given(calculatorMock.calculate(eq(loanApplication.getPerson()))).willReturn(350);
+        BDDMockito.given(calculatorMock.calculate(eq(loanApplication))).willReturn(350);
 
         //when
         CreditApplicationDecision decision = cut.getDecision(loanApplication);
@@ -77,7 +84,7 @@ class CreditApplicationServiceTest {
     public void test3(){
         //given
         LoanApplication loanApplication = LoanApplicationTestFactory.create(Loan.MORTGAGE, 190000.0, (byte) 25, 5000, 2);
-        BDDMockito.given(calculatorMock.calculate(eq(loanApplication.getPerson()))).willReturn(450);
+        BDDMockito.given(calculatorMock.calculate(eq(loanApplication))).willReturn(450);
 
         //when
         CreditApplicationDecision decision = cut.getDecision(loanApplication);
@@ -90,7 +97,7 @@ class CreditApplicationServiceTest {
     public void test4(){
         //given
         LoanApplication loanApplication = LoanApplicationTestFactory.create(Loan.MORTGAGE, 100000.0, (byte) 25, 5000, 2);
-        BDDMockito.given(calculatorMock.calculate(eq(loanApplication.getPerson()))).willReturn(450);
+        BDDMockito.given(calculatorMock.calculate(eq(loanApplication))).willReturn(450);
 
         //when
         CreditApplicationDecision decision = cut.getDecision(loanApplication);

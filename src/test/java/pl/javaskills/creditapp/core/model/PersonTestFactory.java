@@ -31,7 +31,7 @@ public class PersonTestFactory {
                 .withFamilyMembers(familyMemberList)
                 .withPersonalData(personalData)
                 .withContactData(null)
-                .withFinanceData( new FinanceData(sourcesOfIncomes))
+                .withFinanceData( new FinanceData(Arrays.asList(sourcesOfIncomes)))
                 .build();
     }
 
@@ -50,7 +50,7 @@ public class PersonTestFactory {
                 .withFamilyMembers(familyMemberList)
                 .withPersonalData(personalData)
                 .withContactData(null)
-                .withFinanceData(new FinanceData(sourcesOfIncomes))
+                .withFinanceData(new FinanceData(Arrays.asList(sourcesOfIncomes)))
                 .build();
     }
 
@@ -127,8 +127,8 @@ public class PersonTestFactory {
                     .withFamilyMembers(familyMemberList)
                     .withPersonalData(personalData)
                     .withContactData(null)
-                    .withFinanceData(new FinanceData(
-                            new SourcesOfIncome(IncomeType.SELF_EMPLOYMENT, totalMonthlyIncomeInPln)))
+                    .withFinanceData(new FinanceData(Arrays.asList(
+                            new SourcesOfIncome(IncomeType.SELF_EMPLOYMENT, totalMonthlyIncomeInPln))))
                     .build();
         }
     }

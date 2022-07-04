@@ -2,14 +2,10 @@ package pl.javaskills.creditapp.core.scoring;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import pl.javaskills.creditapp.core.model.Education;
 import pl.javaskills.creditapp.core.model.Person;
-import pl.javaskills.creditapp.core.model.PersonalData;
 
-import java.util.UUID;
-
-public class EducationCalculator implements PersonCalculator{
+public class EducationCalculator implements ScoringCalculator {
     private static final Logger log = LoggerFactory.getLogger(EducationCalculator.class);
 
     @Override

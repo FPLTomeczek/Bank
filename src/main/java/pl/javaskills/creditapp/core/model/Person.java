@@ -47,12 +47,23 @@ public abstract class Person {
         return financeData;
     }
 
+    public double getBalance()
+    {
+        double totalMonthlyIncome = 0.0;
+        for (SourcesOfIncome sourceOfIncome: financeData.getSourcesOfIncomes()) {
+            totalMonthlyIncome+=sourceOfIncome.getNetMonthlyIncome();
+        }
+
+        double totalExpenses = 0.0;
+        for (Expense expense: financeData.getExpenses()) {
+            totalExpenses+=expense.getAmount();
+        }
+
+        return totalMonthlyIncome - totalExpenses;
+    }
+
     public double getIncomePerFamilyMember()
     {
-        double totalMonthlyIncome = 0;
-        for (SourcesOfIncome sourceofIncome: financeData.getSourcesOfIncomes()) {
-            totalMonthlyIncome+=sourceofIncome.getNetMonthlyIncome();
-        }
-        return totalMonthlyIncome/this.getNumOfFamilyDependants();
+        return getBalance()/this.getNumOfFamilyDependants();
     }
 }

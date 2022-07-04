@@ -1,5 +1,6 @@
 package pl.javaskills.creditapp.core.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class NaturalPerson extends Person {
@@ -20,7 +21,7 @@ public class NaturalPerson extends Person {
         private PersonalData personalData;
         private ContactData contactData;
         private FinanceData financeData;
-        private List<FamilyMember> familyMemberList;
+        private List<FamilyMember> familyMemberList = new ArrayList<>();
 
         private Builder() {
         }
