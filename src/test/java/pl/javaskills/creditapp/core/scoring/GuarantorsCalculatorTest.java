@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+import static pl.javaskills.creditapp.util.AgeUtils.generateBirthDate;
 class GuarantorsCalculatorTest {
 
     private GuarantorsCalculator cut = new GuarantorsCalculator();
@@ -19,7 +19,7 @@ class GuarantorsCalculatorTest {
         //given
         NaturalPerson person = getNaturalPerson();
         PurposeOfLoan purposeOfLoan = new PurposeOfLoan(Loan.MORTGAGE, 50000.00, 30);
-        Set<Guarantor> guarantors = Sets.newSet(new Guarantor("45678934353", 18));
+        Set<Guarantor> guarantors = Sets.newSet(new Guarantor("45678934353", generateBirthDate(18)));
         LoanApplication loanApplication = LoanApplicationTestFactory.create(person, purposeOfLoan, guarantors);
 
         //when
@@ -35,8 +35,8 @@ class GuarantorsCalculatorTest {
         //given
         NaturalPerson person = getNaturalPerson();
         PurposeOfLoan purposeOfLoan = new PurposeOfLoan(Loan.MORTGAGE, 50000.00, 30);
-        Set<Guarantor> guarantors = Sets.newSet(new Guarantor("45678934353", 18),
-                new Guarantor("45678934354", 50));
+        Set<Guarantor> guarantors = Sets.newSet(new Guarantor("45678934353", generateBirthDate(18)),
+                new Guarantor("45678934354", generateBirthDate(50)));
         LoanApplication loanApplication = LoanApplicationTestFactory.create(person, purposeOfLoan, guarantors);
 
         //when

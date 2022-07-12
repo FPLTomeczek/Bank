@@ -1,5 +1,7 @@
 package pl.javaskills.creditapp.core;
 
+import java.time.ZoneId;
+
 public interface Constants {
 
     double MORTGAGE_LOAN_RATE = 0.2;
@@ -12,5 +14,6 @@ public interface Constants {
     String EMAIL_REGEX = ".+@.+";
     String PHONE_NUMBER_REGEX = "\\+?([0-9]?){2}[0-9]{9}";
     String PESEL_REGEX = "\\d{11}";
+    String DEFAULT_SYSTEM_ZONE_ID = "America/New_York";
 
 }

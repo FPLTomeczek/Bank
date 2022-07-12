@@ -2,6 +2,7 @@ package pl.javaskills.creditapp.core.model;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import pl.javaskills.creditapp.util.AgeUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,9 +17,9 @@ class PersonTest {
     public void test1(){
 
         //given
-        final FamilyMember familyMember1 = new FamilyMember("John", 18);
-        final FamilyMember familyMember2 = new FamilyMember("Jane", 5);
-        final FamilyMember familyMember3 = new FamilyMember("Jarret", 40);
+        final FamilyMember familyMember1 = new FamilyMember("John", AgeUtils.generateBirthDate(18));
+        final FamilyMember familyMember2 = new FamilyMember("Jane", AgeUtils.generateBirthDate(5));
+        final FamilyMember familyMember3 = new FamilyMember("Jarret", AgeUtils.generateBirthDate(40));
         List<FamilyMember> familyMemberList = Arrays.asList(familyMember1,familyMember2,familyMember3);
 
         //when

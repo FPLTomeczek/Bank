@@ -1,13 +1,25 @@
 package pl.javaskills.creditapp.core.model;
 
+import pl.javaskills.creditapp.core.annotation.NotNull;
+import pl.javaskills.creditapp.core.annotation.ValidateCollection;
+import pl.javaskills.creditapp.core.annotation.ValidateObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public abstract class Person {
+    @NotNull
+    @ValidateObject
     protected final PersonalData personalData;
+    @NotNull
+    @ValidateObject
     protected final ContactData contactData;
+    @NotNull
+    @ValidateObject
     protected final FinanceData financeData;
+    @NotNull
+    @ValidateCollection
     protected final List<FamilyMember> familyMembers;
 
     protected Person(PersonalData personalData, ContactData contactData, FinanceData financeData, List<FamilyMember> familyMembers) {

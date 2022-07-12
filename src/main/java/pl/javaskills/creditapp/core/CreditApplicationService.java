@@ -10,19 +10,30 @@ import pl.javaskills.creditapp.core.model.LoanApplication;
 import pl.javaskills.creditapp.core.model.Person;
 import pl.javaskills.creditapp.core.validation.CompoundPostValidator;
 import pl.javaskills.creditapp.core.validation.CreditApplicationValidator;
+import pl.javaskills.creditapp.di.Inject;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZonedDateTime;
 
 import static pl.javaskills.creditapp.core.DecisionType.*;
 
 public class CreditApplicationService {
 
-    private final PersonScoringCalculatorFactory personScoringCalculatorFactory;
-    private final CreditApplicationValidator creditApplicationValidator;
-    private final CompoundPostValidator compoundPostValidator;
+    @Inject
+    private PersonScoringCalculatorFactory personScoringCalculatorFactory;
+    @Inject
+    private CreditApplicationValidator creditApplicationValidator;
+    @Inject
+    private CompoundPostValidator compoundPostValidator;
 
     public CreditApplicationService(PersonScoringCalculatorFactory personScoringCalculatorFactory, CreditApplicationValidator creditApplicationValidator, CompoundPostValidator compoundPostValidator) {
         this.personScoringCalculatorFactory = personScoringCalculatorFactory;
         this.creditApplicationValidator = creditApplicationValidator;
         this.compoundPostValidator = compoundPostValidator;
+    }
+
+    public CreditApplicationService() {
     }
 
     private static final Logger log = LoggerFactory.getLogger(CreditApplicationService.class);
@@ -31,6 +42,7 @@ public class CreditApplicationService {
 
         String id = loanApplication.getId().toString();
 
+        Instant start = Instant.now();
 
         try {
             Person p = loanApplication.getPerson();
@@ -78,7 +90,9 @@ public class CreditApplicationService {
             throw new IllegalStateException();
         }
         finally {
-            log.info("Application processing finished");
+            long ms1 = Duration.between(start, Instant.now()).toMillis();
+            long ms2 = Duration.between(loanApplication.getCreationDateClientZone(), ZonedDateTime.now(loanApplication.getClientTimeZone())).toMillis();
+            log.info("Application processing finished. Took {}/{} ms.",ms1, ms2);
         }
 
 

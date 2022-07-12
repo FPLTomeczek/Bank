@@ -3,33 +3,38 @@ package pl.javaskills.creditapp;
 import pl.javaskills.creditapp.client.CreditApplicationReader;
 import pl.javaskills.creditapp.client.DummyCreditApplicationReader;
 import pl.javaskills.creditapp.core.*;
+import pl.javaskills.creditapp.core.annotation.NotNull;
 import pl.javaskills.creditapp.core.model.LoanApplication;
 import pl.javaskills.creditapp.core.scoring.*;
 import pl.javaskills.creditapp.core.validation.*;
+import pl.javaskills.creditapp.core.validation.reflection.*;
+import pl.javaskills.creditapp.di.ClassInitializer;
+
+import java.time.ZoneId;
+import java.util.List;
+import java.util.Set;
+import java.util.TimeZone;
 
 
 public class Main {
-    public static void main(String[] args) {
+    static
+    {
+        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of(Constants.DEFAULT_SYSTEM_ZONE_ID)));
+    }
+    public static void main(String[] args) throws Exception {
         CreditApplicationReader creditApplicationReader = new DummyCreditApplicationReader();
+        ;
 
+        List<FieldAnnotationProcessor> fieldAnnotationProcessors = List.of(new NotNullAnnotationProcessor(), new RegexAnnotationProcessor());
+        List<ClassAnnotationProcessor> classAnnotationProcessors = List.of(new ExactlyOneNotNullAnnotationProcessor());
+        final ObjectValidator objectValidator = new ObjectValidator(fieldAnnotationProcessors, classAnnotationProcessors);
 
-        EducationCalculator educationCalculator = new EducationCalculator();
-        IncomeCalculator incomeCalculator = new IncomeCalculator();
-        MaritalStatusCalculator maritalStatusCalculator = new MaritalStatusCalculator();
-        SelfEmployedScoringCalculator selfEmployedScoringCalculator = new SelfEmployedScoringCalculator();
-        GuarantorsCalculator guarantorsCalculator = new GuarantorsCalculator();
-
-        PersonScoringCalculatorFactory personScoringCalculatorFactory = new PersonScoringCalculatorFactory(selfEmployedScoringCalculator, educationCalculator,
-                maritalStatusCalculator, incomeCalculator, guarantorsCalculator);
-        CreditApplicationValidator creditApplicationValidator = new CreditApplicationValidator(
-                new PersonValidator(new PersonalDataValidator()),
-                new PurposeOfLoanValidator(),
-                new GuarantorValidator());
         CompoundPostValidator compoundPostValidator = new CompoundPostValidator(new PurposeOfLoanPostValidator(), new ExpensesPostValidator());
-        CreditApplicationService service = new CreditApplicationService(personScoringCalculatorFactory, creditApplicationValidator, compoundPostValidator);
-        LoanApplication loanApplication = creditApplicationReader.read();
-        CreditApplicationManager creditApplicationManager = new CreditApplicationManager(service);
+        ClassInitializer classInitializer = new ClassInitializer();
+        classInitializer.registerInstance(compoundPostValidator);
+        classInitializer.registerInstance(objectValidator);
 
+        CreditApplicationManager creditApplicationManager = (CreditApplicationManager)classInitializer.createInstance(CreditApplicationManager.class);
         creditApplicationManager.add(creditApplicationReader.read());
 //        creditApplicationManager.add(creditApplicationReader.read());
 //        creditApplicationManager.add(creditApplicationReader.read());

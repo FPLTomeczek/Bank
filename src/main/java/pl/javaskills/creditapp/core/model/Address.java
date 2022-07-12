@@ -1,12 +1,19 @@
 package pl.javaskills.creditapp.core.model;
 
+import pl.javaskills.creditapp.core.annotation.NotNull;
+
 import java.util.Objects;
 
 public class Address {
+    @NotNull
     private final String street;
+    @NotNull
     private final String city;
+    @NotNull
     private final String houseNumber;
+    @NotNull
     private final String zipCode;
+    @NotNull
     private final String state;
 
     public Address(String street, String city, String houseNumber, String zipCode, String state) {

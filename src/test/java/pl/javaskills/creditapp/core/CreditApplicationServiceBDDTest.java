@@ -6,6 +6,8 @@ import pl.javaskills.creditapp.core.exception.RequirementNotMetCause;
 import pl.javaskills.creditapp.core.model.*;
 import pl.javaskills.creditapp.core.scoring.*;
 import pl.javaskills.creditapp.core.validation.*;
+import pl.javaskills.creditapp.core.validation.reflection.*;
+import pl.javaskills.creditapp.util.AgeUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,8 +25,10 @@ class CreditApplicationServiceBDDTest {
     private final SelfEmployedScoringCalculator selfEmployedScoringCalculator = new SelfEmployedScoringCalculator();
     private final GuarantorsCalculator guarantorsCalculator = new GuarantorsCalculator();
     private final CompoundPostValidator compoundPostValidator = new CompoundPostValidator(new PurposeOfLoanPostValidator(), new ExpensesPostValidator());
-    private final CreditApplicationValidator creditApplicationValidator = new CreditApplicationValidator(new PersonValidator(new PersonalDataValidator()),new PurposeOfLoanValidator(), new GuarantorValidator());
-
+    private List<FieldAnnotationProcessor> fieldAnnotationProcessors = List.of(new NotNullAnnotationProcessor(), new RegexAnnotationProcessor());
+    private List<ClassAnnotationProcessor> classAnnotationProcessors = List.of(new ExactlyOneNotNullAnnotationProcessor());
+    final ObjectValidator objectValidator = new ObjectValidator(fieldAnnotationProcessors, classAnnotationProcessors);
+    private CreditApplicationValidator creditApplicationValidator = new CreditApplicationValidator(objectValidator);
     private final PersonScoringCalculatorFactory personScoringCalculatorFactory = new PersonScoringCalculatorFactory(selfEmployedScoringCalculator, educationCalculator,maritalStatusCalculator, incomeCalculator, guarantorsCalculator);
 
     private CreditApplicationService cut = new CreditApplicationService(personScoringCalculatorFactory, creditApplicationValidator, compoundPostValidator); ;
@@ -33,9 +37,10 @@ class CreditApplicationServiceBDDTest {
     @DisplayName("should return Decision is NEGATIVE_REQUIREMENTS_NOT_MET, minumum loan amount requirement is not met")
     public void test1(){
         //given
-        List<FamilyMember> familyMemberList = Arrays.asList(new FamilyMember("John",18));
+        List<FamilyMember> familyMemberList = Arrays.asList(new FamilyMember("John", AgeUtils.generateBirthDate(18)));
         NaturalPerson person = NaturalPerson.Builder
                 .create()
+                .withPesel("12312312312")
                 .withFamilyMembers(familyMemberList)
                 .withPersonalData(PersonalData.Builder.create()
                         .withName("Test")
@@ -45,6 +50,12 @@ class CreditApplicationServiceBDDTest {
                         .withMaritalStatus(MaritalStatus.MARRIED)
                         .build())
                 .withFinanceData(new FinanceData(Arrays.asList(new SourcesOfIncome(IncomeType.SELF_EMPLOYMENT, 10000.00))))
+                .withContactData(ContactData.Builder.create()
+                        .withEmail("test@test")
+                        .withPhoneNumber("123123132")
+                        .withHomeAddress(new Address("test","test","test","test","test"))
+                        .withCorrespondenceAddress(new Address("test","test","test","test","test"))
+                        .build())
                 .build();
         PurposeOfLoan purposeOfLoan = new PurposeOfLoan(Loan.MORTGAGE, 50000.00, 30);
         LoanApplication loanApplication = LoanApplicationTestFactory.create(person, purposeOfLoan);
@@ -61,7 +72,7 @@ class CreditApplicationServiceBDDTest {
     @DisplayName("should return Decision is NEGATIVE, when years since founded < 2")
     public void test2(){
         //given
-        List<FamilyMember> familyMemberList = Arrays.asList(new FamilyMember("John",18));
+        List<FamilyMember> familyMemberList = Arrays.asList(new FamilyMember("John",AgeUtils.generateBirthDate(18)));
         SelfEmployed person = SelfEmployed.Builder
                 .create()
                 .withFamilyMembers(familyMemberList)
@@ -74,6 +85,13 @@ class CreditApplicationServiceBDDTest {
                         .build())
                 .withFinanceData(new FinanceData(Arrays.asList(new SourcesOfIncome(IncomeType.SELF_EMPLOYMENT, 7000.00))))
                 .withYearsSinceFounded(1)
+                .withNip("test")
+                .withContactData(ContactData.Builder.create()
+                        .withEmail("test@test")
+                        .withPhoneNumber("123123132")
+                        .withHomeAddress(new Address("test","test","test","test","test"))
+                        .withCorrespondenceAddress(new Address("test","test","test","test","test"))
+                        .build())
                 .build();
         PurposeOfLoan purposeOfLoan = new PurposeOfLoan(Loan.MORTGAGE, 500000.00, 30);
         LoanApplication loanApplication = LoanApplicationTestFactory.create(person, purposeOfLoan);
@@ -90,7 +108,7 @@ class CreditApplicationServiceBDDTest {
     @DisplayName("should return Decision is CONTACT_REQUIRED, when years since founded >= 2")
     public void test3(){
         //given
-        List<FamilyMember> familyMemberList = Arrays.asList(new FamilyMember("John",18));
+        List<FamilyMember> familyMemberList = Arrays.asList(new FamilyMember("John",AgeUtils.generateBirthDate(18)));
         SelfEmployed person = SelfEmployed.Builder
                 .create()
                 .withFamilyMembers(familyMemberList)
@@ -103,6 +121,13 @@ class CreditApplicationServiceBDDTest {
                         .build())
                 .withFinanceData(new FinanceData(Arrays.asList(new SourcesOfIncome(IncomeType.SELF_EMPLOYMENT, 7000.00))))
                 .withYearsSinceFounded(3)
+                .withNip("test")
+                .withContactData(ContactData.Builder.create()
+                        .withEmail("test@test")
+                        .withPhoneNumber("123123132")
+                        .withHomeAddress(new Address("test","test","test","test","test"))
+                        .withCorrespondenceAddress(new Address("test","test","test","test","test"))
+                        .build())
                 .build();
         PurposeOfLoan purposeOfLoan = new PurposeOfLoan(Loan.MORTGAGE, 500000.00, 30);
         LoanApplication loanApplication = LoanApplicationTestFactory.create(person, purposeOfLoan);
@@ -133,6 +158,13 @@ class CreditApplicationServiceBDDTest {
                         .build())
                 .withFinanceData(financeData)
                 .withYearsSinceFounded(3)
+                .withNip("test")
+                .withContactData(ContactData.Builder.create()
+                        .withEmail("test@test")
+                        .withPhoneNumber("123123132")
+                        .withHomeAddress(new Address("test","test","test","test","test"))
+                        .withCorrespondenceAddress(new Address("test","test","test","test","test"))
+                        .build())
                 .build();
         PurposeOfLoan purposeOfLoan = new PurposeOfLoan(Loan.MORTGAGE, 500000.00, 30);
         LoanApplication loanApplication = LoanApplicationTestFactory.create(person, purposeOfLoan);

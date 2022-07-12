@@ -1,12 +1,19 @@
 package pl.javaskills.creditapp.core.model;
 
-public class FamilyMember implements Comparable<FamilyMember>{
-    private final String name;
-    private final Integer age;
+import pl.javaskills.creditapp.core.annotation.NotNull;
 
-    public FamilyMember(String name, int age) {
+import java.time.LocalDate;
+import java.time.Period;
+
+public class FamilyMember implements Comparable<FamilyMember>{
+    @NotNull
+    private final String name;
+    @NotNull
+    private final LocalDate birthDate;
+
+    public FamilyMember(String name, LocalDate birthDate) {
         this.name = name;
-        this.age = age;
+        this.birthDate = birthDate;
     }
 
     public String getName() {
@@ -14,19 +21,19 @@ public class FamilyMember implements Comparable<FamilyMember>{
     }
 
     public Integer getAge() {
-        return age;
+        return Period.between(birthDate, LocalDate.now()).getYears();
     }
 
     @Override
     public String toString() {
         return "FamilyMember{" +
                 "name='" + name + '\'' +
-                ", age=" + age +
+                ", birthDate=" + birthDate +
                 '}';
     }
 
     @Override
     public int compareTo(FamilyMember o) {
-        return o.age.compareTo(this.age);
+        return o.birthDate.compareTo(this.birthDate);
     }
 }

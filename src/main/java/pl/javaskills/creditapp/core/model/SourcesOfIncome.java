@@ -1,6 +1,9 @@
 package pl.javaskills.creditapp.core.model;
 
+import pl.javaskills.creditapp.core.annotation.NotNull;
+
 public class SourcesOfIncome {
+    @NotNull
     private final IncomeType incomeType;
     private final double netMonthlyIncome;
 

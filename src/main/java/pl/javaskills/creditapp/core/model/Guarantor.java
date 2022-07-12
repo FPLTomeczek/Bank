@@ -1,14 +1,23 @@
 package pl.javaskills.creditapp.core.model;
 
+import pl.javaskills.creditapp.core.Constants;
+import pl.javaskills.creditapp.core.annotation.NotNull;
+import pl.javaskills.creditapp.core.annotation.Regex;
+
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Objects;
 
 public class Guarantor implements Comparable<Guarantor>{
+    @NotNull
+    @Regex(Constants.PESEL_REGEX)
     private final String pesel;
-    private final Integer age;
+    @NotNull
+    private final LocalDate birthDate;
 
-    public Guarantor(String pesel, Integer age) {
+    public Guarantor(String pesel, LocalDate birthDate) {
         this.pesel = pesel;
-        this.age = age;
+        this.birthDate = birthDate;
     }
 
     public String getPesel() {
@@ -16,7 +25,7 @@ public class Guarantor implements Comparable<Guarantor>{
     }
 
     public int getAge() {
-        return age;
+        return Period.between(birthDate, LocalDate.now()).getYears();
     }
 
     @Override
@@ -38,12 +47,12 @@ public class Guarantor implements Comparable<Guarantor>{
         {
             return o.pesel.compareTo(this.pesel);
         }
-        return this.age.compareTo(o.age);
+        return this.birthDate.compareTo(o.birthDate);
     }
 
     public static class Builder{
         private String pesel;
-        private Integer age;
+        private LocalDate birthDate;
 
         private Builder(){}
         public static Builder create()
@@ -57,15 +66,15 @@ public class Guarantor implements Comparable<Guarantor>{
             return this;
         }
 
-        public Builder withAge(int age)
+        public Builder withBirthDate(LocalDate birthDate)
         {
-            this.age = age;
+            this.birthDate = birthDate;
             return this;
         }
 
         public Guarantor build()
         {
-            return new Guarantor(pesel, age);
+            return new Guarantor(pesel, birthDate);
         }
 
     }

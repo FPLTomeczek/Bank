@@ -1,11 +1,23 @@
 package pl.javaskills.creditapp.core.model;
 
+import pl.javaskills.creditapp.core.Constants;
+import pl.javaskills.creditapp.core.annotation.NotNull;
+import pl.javaskills.creditapp.core.annotation.Regex;
+import pl.javaskills.creditapp.core.annotation.ValidateObject;
+
 import java.util.Optional;
 
 public class ContactData {
+    @NotNull
+    @Regex(Constants.EMAIL_REGEX)
     private final String email;
+    @NotNull
+    @Regex(Constants.PHONE_NUMBER_REGEX)
     private final String phoneNumber;
+    @NotNull
     private final Optional<Address> correspondenceAddress;
+    @NotNull
+    @ValidateObject
     private final Address homeAddress;
 
     private ContactData(String email, String phoneNumber,

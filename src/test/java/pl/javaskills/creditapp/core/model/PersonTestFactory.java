@@ -1,5 +1,7 @@
 package pl.javaskills.creditapp.core.model;
 
+import pl.javaskills.creditapp.util.AgeUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,7 +12,7 @@ public class PersonTestFactory {
 
         for (int i = 0; i< dependants-1; i++)
         {
-            familyMemberList.add(new FamilyMember("John",18));
+            familyMemberList.add(new FamilyMember("John", AgeUtils.generateBirthDate(18)));
         }
         return familyMemberList;
     }
@@ -55,8 +57,8 @@ public class PersonTestFactory {
     }
 
     public static NaturalPerson create(MaritalStatus maritalStatus) {
-        List<FamilyMember> familyMemberList = Arrays.asList(new FamilyMember("John",18),
-                new FamilyMember("Jane",20));
+        List<FamilyMember> familyMemberList = Arrays.asList(new FamilyMember("John",AgeUtils.generateBirthDate(18)),
+                new FamilyMember("Jane",AgeUtils.generateBirthDate(20)));
         PersonalData personalData = PersonalData.Builder.create()
                 .withName("test")
                 .withLastName("test")
@@ -74,8 +76,8 @@ public class PersonTestFactory {
     }
 
     public static NaturalPerson create(Education education) {
-        List<FamilyMember> familyMemberList = Arrays.asList(new FamilyMember("John",18),
-                new FamilyMember("Jane",20));
+        List<FamilyMember> familyMemberList = Arrays.asList(new FamilyMember("John",AgeUtils.generateBirthDate(18)),
+                new FamilyMember("Jane",AgeUtils.generateBirthDate(20)));
         PersonalData personalData = PersonalData.Builder.create()
                 .withName("test")
                 .withLastName("test")
@@ -93,8 +95,8 @@ public class PersonTestFactory {
     }
 
     public static NaturalPerson create() {
-        List<FamilyMember> familyMemberList = Arrays.asList(new FamilyMember("John",18),
-                new FamilyMember("Jane",20));
+        List<FamilyMember> familyMemberList = Arrays.asList(new FamilyMember("John",AgeUtils.generateBirthDate(18)),
+                new FamilyMember("Jane",AgeUtils.generateBirthDate(20)));
         PersonalData personalData = PersonalData.Builder.create()
                 .withName("test")
                 .withLastName("test")
